@@ -9,20 +9,34 @@ import (
 	"github.com/aws/aws-sdk-go/service/cloudwatchlogs"
 )
 
-func LogGroupQueryResults(logGroupName string) (*cloudwatchlogs.GetQueryResultsOutput, error) {
+type LogGroupQueryConfig struct {
+	AWSRegion    string
+	LogGroupName string
+	MinutesAgo   int64
+}
+
+func NewLogGroupQuery(awsRegion string, logGroupName string, MinutesAgo int64) *LogGroupQueryConfig {
+	return &LogGroupQueryConfig{
+		AWSRegion:    awsRegion,
+		LogGroupName: logGroupName,
+		MinutesAgo:   MinutesAgo,
+	}
+}
+
+func (l *LogGroupQueryConfig) LogGroupQueryResults() (*cloudwatchlogs.GetQueryResultsOutput, error) {
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
-		Config: aws.Config{Region: aws.String("us-east-1")},
+		Config: aws.Config{Region: aws.String(l.AWSRegion)},
 	}))
 
 	svc := cloudwatchlogs.New(sess)
 
 	currentTime := time.Now()
 	endTime := currentTime.UnixNano() / int64(time.Millisecond)
-	fiveMinutesAgo := currentTime.Add(-15 * time.Minute)
-	startTime := fiveMinutesAgo.UnixNano() / int64(time.Millisecond)
+	minutesAgo := currentTime.Add(-(time.Duration(l.MinutesAgo)) * time.Minute)
+	startTime := minutesAgo.UnixNano() / int64(time.Millisecond)
 
 	queryInput := &cloudwatchlogs.StartQueryInput{
-		LogGroupName: aws.String(logGroupName),
+		LogGroupName: aws.String(l.LogGroupName),
 		StartTime:    aws.Int64(startTime),
 		EndTime:      aws.Int64(endTime),
 		QueryString:  aws.String("fields @message"),
