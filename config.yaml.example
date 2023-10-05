@@ -1,0 +1,17 @@
+rules:
+  header:
+    x-api-id: # The header name in HTTP Request header
+      threshold: 100
+
+notifications:
+  slack:
+    webhook-url: https://hooks.slack.com/services/DA2DA13QS/LW5DALDSMFDT5/qazqqd4f5Qph7LgXdZaHesXs
+
+  telegram:
+    bot-token: "123456789:NNDa2tbpq97izQx_invU6cox6uarhrlZDfa"
+    chat-id:  "-4128833322"
+
+aws:
+  waf-log-group-name: aws-waf-logs-cloudwatch-cloudfront
+  region: us-east-1
+  retrive-logs-minutes-ago: 60
