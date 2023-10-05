@@ -2,54 +2,44 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"traffic-analyzer/internal/config"
+	"traffic-analyzer/internal/counter"
 	"traffic-analyzer/internal/logparser"
-	"traffic-analyzer/internal/rules"
+	"traffic-analyzer/internal/notifications"
 )
 
-var logGroupName = ""
-
 func main() {
+	cfg := config.NewConfig()
+	logQuery := logparser.NewLogGroupQuery(cfg.AWS.Region, cfg.AWS.WAFLogGroupName, cfg.AWS.RetriveLogsMinutesAgo)
+	slackNotifications := notifications.NewSlackNotifications(cfg.Notifications.Slack.WebhookURL)
+	telegramNotifications := notifications.NewTelegramNotifications(cfg.Notifications.Telegram.BotToken, cfg.Notifications.Telegram.ChatID)
 
-	queryResults, err := logparser.LogGroupQueryResults(logGroupName)
+	var notificationMessage string
+
+	queryResults, err := logQuery.LogGroupQueryResults()
 	if err != nil {
 		panic(err)
 	}
 
-	headerRules := rules.HeaderRules()
+	headerAndValues := logQuery.ParserLogQueryResults(queryResults)
+	exceededThresholdHeader := counter.CounterExceededThresholdHeader(headerAndValues)
 
-	headerCount := make(map[logparser.HTTPHeader]int)
-	headerAndValues := []logparser.HTTPHeader{}
-
-	for _, result := range queryResults.Results {
-		for _, field := range result {
-			fieldName := *field.Field
-			fieldValue := *field.Value
-
-			if fieldName == "@timestamp" || fieldName == "@message" {
-				logMessage, err := logparser.LogParser(fieldValue)
-				if err != nil {
-					continue
-				}
-
-				for _, header := range logMessage.HTTPRequest.Headers {
-					if _, ok := headerRules[header.Name]; ok {
-						fmt.Println(header.Name, header.Value)
-
-						headerAndValues = append(headerAndValues, logparser.HTTPHeader{
-							Name:  header.Name,
-							Value: header.Value,
-						})
-					}
-				}
-			}
-		}
+	for _, header := range exceededThresholdHeader {
+		notificationMessage += fmt.Sprintf("The '%s:%s' with IP address '%s' has exceeded the request limit with %d requests in %d minutes.\n", header.Name, header.Value, header.IP, header.NumberOfRequests, cfg.AWS.RetriveLogsMinutesAgo)
 	}
 
-	for _, header := range headerAndValues {
-		headerCount[header]++
+	log.Println(notificationMessage)
+
+	err = slackNotifications.SendNotificationToSlack(notificationMessage)
+
+	if err != nil {
+		log.Printf("Error on send notification to slack: %v\n", err)
 	}
 
-	for header, count := range headerCount {
-		fmt.Printf("(%s, %s): %d vezes\n", header.Name, header.Value, count)
+	err = telegramNotifications.SendNotificationToTelegram(notificationMessage)
+
+	if err != nil {
+		log.Printf("Error on send notification to telegram: %v\n", err)
 	}
 }
