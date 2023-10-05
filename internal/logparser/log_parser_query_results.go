@@ -1,7 +1,7 @@
 package logparser
 
 import (
-	"traffic-analyzer/internal/rules"
+	"aws-waf-header-analyzer/internal/rules"
 
 	"github.com/aws/aws-sdk-go/service/cloudwatchlogs"
 )

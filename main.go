@@ -3,10 +3,10 @@ package main
 import (
 	"fmt"
 	"log"
-	"traffic-analyzer/internal/config"
-	"traffic-analyzer/internal/counter"
-	"traffic-analyzer/internal/logparser"
-	"traffic-analyzer/internal/notifications"
+	"aws-waf-header-analyzer/internal/config"
+	"aws-waf-header-analyzer/internal/counter"
+	"aws-waf-header-analyzer/internal/logparser"
+	"aws-waf-header-analyzer/internal/notifications"
 )
 
 func main() {

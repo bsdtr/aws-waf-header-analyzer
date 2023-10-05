@@ -1,4 +1,4 @@
-module traffic-analyzer
+module aws-waf-header-analyzer
 
 go 1.21.0
 

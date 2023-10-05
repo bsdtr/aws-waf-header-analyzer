@@ -1,8 +1,8 @@
 package counter
 
 import (
-	"traffic-analyzer/internal/logparser"
-	"traffic-analyzer/internal/rules"
+	"aws-waf-header-analyzer/internal/logparser"
+	"aws-waf-header-analyzer/internal/rules"
 )
 
 type threshold struct {
