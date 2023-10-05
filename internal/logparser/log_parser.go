@@ -48,12 +48,12 @@ type LogEntry struct {
 	Ja3Fingerprint              string        `json:"ja3Fingerprint"`
 }
 
-func LogParser(logMessage string) (*LogEntry, error) {
+func LogUnmarshal(logMessage string) (*LogEntry, error) {
 	var logEntry LogEntry
 
 	err := json.Unmarshal([]byte(logMessage), &logEntry)
 	if err != nil {
-		fmt.Println("Erro ao fazer unmarshal do JSON:", err)
+		fmt.Println("Error on unmarshal JSON:", err)
 		return nil, err
 	}
 

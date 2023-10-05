@@ -6,13 +6,15 @@ import (
 )
 
 type threshold struct {
-	Name             string `json:"name"`
-	NumberOfRequests int    `json:"numberOfRequests"`
+	Name             string
+	Value            string
+	NumberOfRequests int
+	IP               string
 }
 
-func CounterHeader(headerAndValues []logparser.HTTPHeader) []threshold {
+func CounterExceededThresholdHeader(headerAndValues []logparser.QueryResultsOutput) []threshold {
 	headerRules := rules.HeaderRules()
-	headerCount := make(map[logparser.HTTPHeader]int)
+	headerCount := make(map[logparser.QueryResultsOutput]int)
 	headersExceededThreshold := []threshold{}
 
 	for _, header := range headerAndValues {
@@ -23,7 +25,9 @@ func CounterHeader(headerAndValues []logparser.HTTPHeader) []threshold {
 		if count > headerRules[header.Name] {
 			headersExceededThreshold = append(headersExceededThreshold, threshold{
 				Name:             header.Name,
+				Value:            header.Value,
 				NumberOfRequests: count,
+				IP:               header.IP,
 			})
 		}
 	}
