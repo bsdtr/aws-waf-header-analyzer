@@ -1,4 +1,0 @@
-rules:
-  header:
-    x-client-id:
-      threshold: 10
