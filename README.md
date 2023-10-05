@@ -4,6 +4,9 @@
     <a href="https://twitter.com/nulldutra">
       <img src="https://img.shields.io/badge/twitter-@nulldutra-blue.svg">
     </a>
+    <a href="https://github.com/nulldutra/aws-waf-header-analyzer/actions/workflows/release.yaml">
+      <img src="https://github.com/nulldutra/aws-waf-header-analyzer/actions/workflows/release.yaml/badge.svg">
+    </a>
   </p>
 </p>
 
