@@ -1,0 +1,22 @@
+release:
+  prerelease: false
+
+builds:
+  - binary: aws-waf-header-analyzer
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - windows
+      - darwin
+      - linux
+      - freebsd 
+    goarch:
+      - amd64
+      - arm64
+      - arm
+
+archives:
+  - format: binary
+    format_overrides:
+      - goos: windows
+        format: zip
