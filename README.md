@@ -1,17 +1,3 @@
-<p align="center">
-  <h3 align="center">AWS WaF HTTP header analyzer</h3>
-  <p align="center">
-    <a href="https://twitter.com/nulldutra">
-      <img src="https://img.shields.io/badge/twitter-@nulldutra-blue.svg">
-    </a>
-    <a href="https://github.com/nulldutra/aws-waf-header-analyzer/actions/workflows/release.yaml">
-      <img src="https://github.com/nulldutra/aws-waf-header-analyzer/actions/workflows/release.yaml/badge.svg">
-    </a>
-  </p>
-</p>
-
-<hr>
-
 ## Building and install
 
 Golang is a dependencie to build the binary. See the documentation to install: https://go.dev/doc/install
